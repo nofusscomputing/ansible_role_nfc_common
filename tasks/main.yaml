@@ -1,4 +1,8 @@
 ---
+# As this role is to be included in playbooks with ``, this will gather the facts for the play and only once
+- name: Gather facts
+  ansible.builtin.gather_facts:
+  when: common_gather_facts | bool
 
 
 - name: Debian Based hosts
