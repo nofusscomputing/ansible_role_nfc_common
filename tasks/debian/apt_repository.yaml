@@ -3,9 +3,6 @@
   ansible.builtin.get_url:
     url: "{{ apt_repository.url }}"
     dest: "{{ apt_repository.save_directory }}/{{ apt_repository.name }}.{{ apt_repository.file_extension }}"
-  # with_items: "{{ [ aptSigningKeys ] | community.general.lists_mergeby( hostConfig.aptSigningKeys | default(''), 'name', list_merge = 'replace' ) }}"
-  # when:
-  #   - ansible_os_family == 'Debian'
 
 
 - name: Add apt repository
@@ -14,9 +11,6 @@
     state: present
     filename: "{{ apt_repository.name }}"
   register: apt_repository_add
-  # with_items: "{{ [ aptRepositories ] | community.general.lists_mergeby(hostConfig.aptRepositories|default(''), 'name', list_merge='replace') }}"
-  # when:
-  #   - ansible_os_family == 'Debian'
 
 
 - name: Apt Update
@@ -62,9 +56,3 @@
           - apt_cache-update.rc | int != 100
         msg: APT Update unknown error
       when: apt_cache-update.rc | int != 100
-
-
-# - name: Clear task variables
-#   ansible.builtin.set_fact:
-#     aptRepositories: []
-#     aptSigningKeys: []

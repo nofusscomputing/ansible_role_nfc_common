@@ -5,10 +5,3 @@
     dest: /etc/hosts
     owner: root
     mode: '700'
-  tags:
-    - always
-
-- name: Clear Task Variables
-  ansible.builtin.set_fact:
-    hostConfig:
-      hosts_file: []

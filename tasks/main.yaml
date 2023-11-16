@@ -1,76 +1,12 @@
 ---
 
-- name: Create Apt proxy configuration file
-  ansible.builtin.template:
-    src: 'apt_proxy.conf'
-    dest: '/etc/apt/apt.conf.d/apt_proxy.conf'
-    owner: 'root'
-    group: 'root'
-    mode: '0644'
-  when: >
-    apt_proxy_url is defined
-      and
-    apt_proxy_url | default('') != ''
-      and
-    ansible_os_family == 'Debian'
-      and
-    not initial_common_tasks | default(false) | bool
 
-
-- name: Initial playbook setup
+- name: Debian Based hosts
   ansible.builtin.include_tasks:
-    file: initial.yaml
+    file: debian.yaml
     apply:
       tags:
         - always
-  when: not initial_common_tasks | default(false) | bool
+  when: ansible_os_family == 'Debian'
   tags:
     - always
-
-
-# As this role is to be included in playbooks with ``, this will gather the facts for the play
-- name: Gather facts
-  ansible.builtin.gather_facts:
-  when: common_gather_facts | bool
-  tags:
-    - always
-
-
-#
-#  Common functions
-#
-
-
-- name: APT Repositories
-  ansible.builtin.include_tasks:
-    file: apt_repository.yaml
-    apply:
-      tags:
-        - always
-  loop: "{{ aptRepositories | default([]) | list }}"
-  loop_control:
-    loop_var: apt_repository
-  when: ansible_os_family == 'Debian'
-
-
-- name: APT Installation
-  ansible.builtin.include_tasks:
-    file: apt_install.yaml
-    apply:
-      tags:
-        - always
-  loop: "{{ aptInstall | default([]) | list }}"
-  loop_control:
-    loop_var: apt_package
-  when: ansible_os_family == 'Debian'
-
-
-- name: Template Filez
-  ansible.builtin.include_tasks:
-    file: template.yaml
-    apply:
-      tags:
-        - always
-  loop: "{{ files.templates | default([]) | list }}"
-  loop_control:
-    loop_var: file_template

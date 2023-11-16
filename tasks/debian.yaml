@@ -1,0 +1,71 @@
+---
+
+- name: Create Apt proxy configuration file
+  ansible.builtin.template:
+    src: 'debian/apt_proxy.conf'
+    dest: '/etc/apt/apt.conf.d/apt_proxy.conf'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  when: >
+    apt_proxy_url is defined
+      and
+    apt_proxy_url | default('') != ''
+      and
+    not initial_common_tasks | default(false) | bool
+
+
+- name: Initial playbook setup
+  ansible.builtin.include_tasks:
+    file: debian/initial.yaml
+    apply:
+      tags:
+        - always
+  when: not initial_common_tasks | default(false) | bool
+
+
+# As this role is to be included in playbooks with ``, this will gather the facts for the play
+- name: Gather facts
+  ansible.builtin.gather_facts:
+  when: common_gather_facts | bool
+
+
+#
+#  Common functions
+#
+
+
+- name: APT Repositories
+  ansible.builtin.include_tasks:
+    file: debian/apt_repository.yaml
+    apply:
+      tags:
+        - always
+  loop: "{{ aptRepositories | default([]) | list }}"
+  loop_control:
+    loop_var: apt_repository
+  when: not initial_common_tasks | default(false) | bool
+
+
+- name: APT Installation
+  ansible.builtin.include_tasks:
+    file: debian/apt_install.yaml
+    apply:
+      tags:
+        - always
+  loop: "{{ aptInstall | default([]) | list }}"
+  loop_control:
+    loop_var: apt_package
+  when: not initial_common_tasks | default(false) | bool
+
+
+- name: Template Filez
+  ansible.builtin.include_tasks:
+    file: template.yaml
+    apply:
+      tags:
+        - always
+  loop: "{{ files.templates | default([]) | list }}"
+  loop_control:
+    loop_var: file_template
+  when: not initial_common_tasks | default(false) | bool
