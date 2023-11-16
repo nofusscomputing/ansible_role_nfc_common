@@ -1,0 +1,21 @@
+
+#initial_common_tasks: false # this variable is set when the task runs for the first time. it enables the roll to be included in every playbook and to only run once.
+#common_gather_facts: false # only gather facts once as by default playbook should not gather facts
+common_gather_facts: false
+
+
+apt_proxy_protocol: http
+#apt_proxy_url: 127.0.0.1:3142
+
+#
+# example config
+#
+files:
+  templates: []
+#   templates:                                                               # Optional, list. default=undefined. 
+                                                                             # List of template files to copy to the host
+#     - name: {{ configured_directory_root }}/fail2ban/filter/keycloak.conf  # Mandatory, string, source filename.
+#       dest: /etc/hosts                                                     # Mandatory, string, source filename
+#       owner: root                                                          # Optional, string, default=undefined
+#       mode: '700'                                                          # Optional, string, default=undefined
+#       notify: 'Restart fail2ban'                                           # Optional, string, handler to trigger

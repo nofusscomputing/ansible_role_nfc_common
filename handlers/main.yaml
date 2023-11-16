@@ -1,0 +1,19 @@
+---
+- name: RebootHost
+  ansible.builtin.reboot:
+    reboot_timeout: 300
+  when: ansible_connection == 'ssh'
+
+
+- name: Reboot Host network change
+  # ansible.builtin.set_fact:
+  #   ansible_host: "{{ hostDetails.network.ipaddress }}"
+  #   cacheable: yes
+  ansible.builtin.reboot:
+    reboot_timeout: 300
+  listen: reboot_host
+  when: ansible_connection == 'ssh'
+
+- name: Rmmodipv6
+  ansible.builtin.command: rmmod ipv6
+  failed_when: false

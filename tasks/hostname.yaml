@@ -1,0 +1,15 @@
+---
+- name: Set Hostname
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
+    use: debian
+  notify: RebootHost
+  when: ansible_os_family == 'Debian'
+  tags:
+    - always
+
+
+- name: Trigger reboot if required
+  ansible.builtin.meta: flush_handlers
+  tags:
+    - always

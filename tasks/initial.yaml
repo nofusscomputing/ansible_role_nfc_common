@@ -1,0 +1,146 @@
+---
+
+- name: Host Template Filez
+  ansible.builtin.include_tasks:
+    file: template.yaml
+  loop: "{{ hostConfig.files.templates | default([]) | list }}"
+  loop_control:
+    loop_var: file_template
+
+
+- name: APT Repositories
+  ansible.builtin.include_tasks:
+    file: apt_repository.yaml
+  loop: "{{ hostConfig.aptRepositories | default([]) | list }}"
+  loop_control:
+    loop_var: apt_repository
+  when: ansible_os_family == 'Debian'
+
+
+- name: Install Specified Host Packages
+  ansible.builtin.include_tasks:
+    file: apt_install.yaml
+  loop: "{{ hostConfig.aptPackages | default([]) | list }}"
+  loop_control:
+    loop_var: apt_package
+  when: ansible_os_family == 'Debian'
+
+
+- name: Setup ansible temp directory
+  ansible.builtin.file:
+    path: /tmp/ansible
+    state: directory
+    owner: "root"
+    group: "root"
+    mode: '0700'
+  delegate_to: localhost
+  connection: local
+
+
+- name: Find directory root
+  ansible.builtin.shell: |
+    ROOT_DIR={{ playbook_dir | dirname }}
+
+    if [ $(echo $ROOT_DIR|grep playbook) ]; then
+
+      ROOT_DIR={{ playbook_dir | dirname | dirname }}
+
+    fi
+
+    echo -n $ROOT_DIR
+  args:
+    executable: /bin/bash
+  register: directory_root_search
+  delegate_to: localhost
+  connection: local
+  become: false
+  changed_when: true == false
+
+
+- name: Set initial common facts
+  ansible.builtin.set_fact:
+    configured_directory_temp_ansible: '/tmp/ansible'
+    configured_directory_root: "{{ directory_root_search.stdout }}"
+    cacheable: true
+
+
+- name: Get ansible user name
+  ansible.builtin.shell: |-
+    echo -n $(whoami)
+  register: localhost_username
+  delegate_to: localhost
+  connection: local
+  changed_when: "'never' == 'changed'"
+
+
+# - name: Ansible host SSH Configuration
+#   ansible.builtin.include_tasks:
+#     file: ssh.yaml
+#   when: >
+#     not init | default(false)
+#       and
+#     ansible_connection == 'ssh'
+
+
+
+# - name: Hostname
+#   ansible.builtin.include_tasks:
+#     file: hostname.yaml
+#   when: >
+#     hostConfig.hosts_file is defined
+#       and
+#     ansible_host != 'localhost'
+#   tags:
+#     - always
+
+
+# - name: Hosts file
+#   ansible.builtin.include_tasks:
+#     file: hosts_file.yaml
+#   when: >
+#     (
+#       hostConfig.hosts_file is defined
+#         and
+#       hostConfig.hosts_file | default('') | length | int > 0
+#     )
+#       and
+#     ansible_os_family == 'Debian'
+#       and
+#     ansible_host != 'localhost'
+#   tags:
+#     - always
+
+
+- name: Network Configuration
+  ansible.builtin.include_tasks:
+    file: network.yaml
+  when: >
+    (
+      hostConfig.network is defined
+        and
+      hostConfig.network.interfaces | default('') | length > 0
+    )
+      and
+    ansible_host != 'localhost'
+      and
+    ansible_host != 'nww-nl.networkedweb.com'
+
+
+#
+#  Playbook global variables
+#
+- name: Set variable dynamic_processor_architecture
+  ansible.builtin.shell: |-
+      if [ $(uname -m) == 'aarch64' ]; then echo -n arm64; fi
+      if [ $(uname -m) == 'x86_64' ]; then echo -n amd64; fi
+  register: dynamic_processor_architecture_cli
+  changed_when: true == false
+  args:
+    executable: /bin/bash
+
+
+- name: Set initial common facts
+  ansible.builtin.set_fact:
+    initial_common_tasks: true
+    dynamic_processor_architecture: "{{ dynamic_processor_architecture_cli.stdout | default('unknown') }}"
+    cacheable: true

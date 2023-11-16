@@ -1,0 +1,17 @@
+---
+- name: Configure network Interfaces
+  ansible.builtin.template:
+    src: "etc_network_interfaces.j2"
+    dest: /etc/network/interfaces
+    owner: root
+    mode: '700'
+  #notify: reboot_host
+  register: network_configure
+  tags:
+    - always
+
+- name: Trigger reboot if network config changed
+  ansible.builtin.meta: flush_handlers
+  when: network_configure.changed | default(false) | bool
+  tags:
+    - always
