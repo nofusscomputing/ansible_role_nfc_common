@@ -8,6 +8,23 @@ about: https://gitlab.com/nofusscomputing/projects/ansible/roles/common
 
 This role is designed to be included in all playbooks as it offers features to dynamically setup the ansible environment.
 
+
+<div align="center">
+
+## Role Details
+
+| Item| Value | Description |
+|:---|:---:|:---|
+| Dependent Roles | _None_ | |
+| Gate Variables | `common_gather_facts`  | _Optional, default not defned which is the same as `false`, gather Ansible facts._|
+| Idempotent | _Yes`*`_ | All except when configuring dns. |
+| Stats Available | _Not Yet_ | Available under yaml path `nfc_common`. |
+| Tags | _Nil_ | If you specify tags for running your playbooks, if this roll is included all tasks will still run as if tag `always` was specified. |
+
+</div>
+
+
+
 when adding this role to a playbook, ensure that `gather_facts` is set to `no` for the play. this role gathers the facts for you. i.e.
 
 Playbook example
@@ -26,22 +43,6 @@ Playbook example
 
 # Additional roles or playbook_include below this line
 ```
-
-
-<div align="center">
-
-## Role Details
-
-| Item| Value | Description |
-|:---|:---:|:---|
-| Dependent Roles | _None_ | |
-| Gate Variables | `common_gather_facts`  | _Optional, default not defned which is the same as `false`, gather Ansible facts._|
-| Idempotent | _Yes`*`_ | All except when configuring dns. |
-| Stats Available | _Not Yet_ | Available under yaml path `nfc_common`. |
-| Tags | _Nil_ | If you specify tags for running your playbooks, if this roll is included all tasks will still run as if tag `always` was specified. |
-
-</div>
-
 
 !!! tip
     If the variable `common_gather_facts` is not set to `true`, by default facts will not be gathered.
