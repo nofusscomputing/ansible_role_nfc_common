@@ -1,0 +1,21 @@
+---
+include:
+  - project: nofusscomputing/projects/gitlab-ci
+    ref: development
+    file:
+      - .gitlab-ci_common.yaml
+      - template/automagic.gitlab-ci.yaml
+
+variables:
+  MY_PROJECT_ID: "52226103"
+  GIT_SYNC_URL: "https://$GITHUB_USERNAME_ROBOT:$GITHUB_TOKEN_ROBOT@github.com/NoFussComputing/ansible_role_nfc_common.git"
+  PAGES_ENVIRONMENT_PATH: projects/ansible/roles/firewall/
+
+
+Ansible-roles.Submodule.Deploy:
+  extends: .submodule_update_trigger
+  variables:
+    SUBMODULE_UPDATE_TRIGGER_PROJECT: nofusscomputing/projects/ansible/ansible-roles
+    GIT_COMMIT_TYPE: feat
+    GIT_COMMIT_TYPE_CATEGORY: role_$CI_PROJECT_NAME
+    GIT_CONFIG_SUBMODULE_NAME: common

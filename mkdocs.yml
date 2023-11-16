@@ -1,0 +1,34 @@
+INHERIT: website-template/mkdocs.yml
+
+docs_dir: 'docs'
+
+repo_name: Firewall Ansible Role
+repo_url: https://gitlab.com/nofusscomputing/projects/ansible/firewall
+edit_uri: '/-/ide/project/nofusscomputing/projects/ansible/firewall/edit/development/-/docs/'
+
+nav:
+- Home: index.md
+
+- Articles: 
+
+  - articles/index.md
+
+- Projects: 
+
+  - projects/index.md
+
+  - Ansible:
+
+    - Roles:
+
+      - Firewall:
+
+        - projects/ansible/roles/firewall/index.md
+
+
+- Operations: 
+
+  - operations/index.md
+
+- Contact Us: contact.md
+
