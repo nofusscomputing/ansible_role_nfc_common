@@ -1,0 +1,18 @@
+#
+# Resolver Configuration
+# 
+# Managed By ansible/role/nfc_common
+#
+# Dont edit this file directly as it will be overwritten. To add additional DNS servers
+# edit the hostConfig config, adding to path hostConfig.network.dns
+#
+
+{% for dns_server in hostConfig.network.dns -%}
+  {% if dns_server.when | default(true) | bool -%}
+{% if dns_server.search is defined %}search {{ dns_server.search }}{% endif %}
+
+nameserver {{ dns_server.ip }}
+{% endif %}
+
+
+{% endfor %}

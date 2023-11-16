@@ -1,0 +1,32 @@
+# 
+# hosts file
+#
+# managed by: ansible
+#
+
+127.0.0.1       localhost
+127.0.0.1       {{ inventory_hostname }}
+127.0.0.1       {{ ansible_hostname }}
+
+{% if hostConfig.hosts_file.groups|default('')|length > 0 %}
+{% for group in hostConfig.hosts_file.groups %}
+# Ansible hosts group '{{ group }}'
+{% for host in groups[group] %}
+{% if hostvars[host].inventory_hostname != inventory_hostname %}{{ hostvars[host].ansible_host }}       {{ hostvars[host].inventory_hostname }}
+{% endif %}
+{% endfor %}
+
+{% endfor %}
+{% endif %}
+
+{% if hostConfig.hosts_file.hosts|default('')|length > 0 %}
+# Ansible specified hosts
+{% for host_detail in hostConfig.hosts_file.groups %}
+{{ host_detail.address }}       {{ host_detail.hostname }}
+
+{% endfor %}
+{% endif%}
+
+# The following lines are desirable for IPv6 capable hosts
+::1     localhost ip6-localhost ip6-loopback
+
