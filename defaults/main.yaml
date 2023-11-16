@@ -19,3 +19,53 @@ files:
 #       owner: root                                                          # Optional, string, default=undefined
 #       mode: '700'                                                          # Optional, string, default=undefined
 #       notify: 'Restart fail2ban'                                           # Optional, string, handler to trigger
+
+
+
+hostConfig:
+  config:
+    hostname: true # Optional, boolean. Set the hostname to the inventory hostname. if this is a FQDN, only first octet is used
+  name: laptop     # optional, bu default will use inventory hostname. 
+  network:
+    
+    interfaces: # used in init role
+        # ethernet
+      - name: enp2s0             # mandatory to configure a specific interface
+        type: dhcp                # mandatory dhcp/static
+        # address: "192.168.1.30"   # optional
+        # netmask: "255.255.255.0"  # optional
+        # gateway: "192.168.1.1"    # optional
+
+        # wifi # leave setup to network manager
+      # - name: wlp3s0             # mandatory to configure a specific interface
+      #   type: dhcp                # mandatory dhcp/static
+        # address: "192.168.1.30"   # optional
+        # netmask: "255.255.255.0"  # optional
+        # gateway: "192.168.1.1"    # optional
+
+  hosts_file: # used by init role to build hosts file
+    hosts: []
+      # - hostname: bla
+      #   address: ip
+    groups: [] # Optional, list. Ansible group name(s) for hosts that will be added to /etc/hosts
+
+  aptPackages: # Optionlal
+    - name: firmware-iwlwifi
+      version: '' # Optional, string. if specified nust be the apt version and if  present will lock the package so it's not auto updated.
+
+  aptRepositories:
+    - name:           # Mandatory, string. friendly name for repository
+      repo:           # Mandatory, string. Apt repositry line. see apt.sources.list
+      save_directory: # Mandatory for signing key download, string. directory where to save signing key. filname will be name field.
+      file_extension: # Mandatory for signing key download, string. File extension for apt signing key. normally `asc`
+      url: # Mandatory for signing key download, string. url of the apt signing key.
+
+  files: # Optional, list.
+    # files:     # Optional, list. # Not yet supported
+    templates: # Optional, dict.
+      - name: # Mandatory, string. Source path for template
+        dest: # Mandatory, string. destination for template
+        owner: # Optional, string. name/uid for dest file owner
+        mode:  # Optional, string. mask for destination file
+        notify: # Optional, string. Name of notify to run on chage
+

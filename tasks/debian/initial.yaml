@@ -2,7 +2,7 @@
 
 - name: Host Template Filez
   ansible.builtin.include_tasks:
-    file: template.yaml
+    file: common/template.yaml
   loop: "{{ hostConfig.files.templates | default([]) | list }}"
   loop_control:
     loop_var: file_template
@@ -10,20 +10,18 @@
 
 - name: APT Repositories
   ansible.builtin.include_tasks:
-    file: apt_repository.yaml
+    file: debian/apt_repository.yaml
   loop: "{{ hostConfig.aptRepositories | default([]) | list }}"
   loop_control:
     loop_var: apt_repository
-  when: ansible_os_family == 'Debian'
 
 
 - name: Install Specified Host Packages
   ansible.builtin.include_tasks:
-    file: apt_install.yaml
+    file: debian/apt_install.yaml
   loop: "{{ hostConfig.aptPackages | default([]) | list }}"
   loop_control:
     loop_var: apt_package
-  when: ansible_os_family == 'Debian'
 
 
 - name: Setup ansible temp directory
@@ -64,34 +62,22 @@
     cacheable: true
 
 
-- name: Get ansible user name
-  ansible.builtin.shell: |-
-    echo -n $(whoami)
-  register: localhost_username
-  delegate_to: localhost
-  connection: local
-  changed_when: "'never' == 'changed'"
+# - name: Get ansible user name
+#   ansible.builtin.shell: |-
+#     echo -n $(whoami)
+#   register: localhost_username
+#   delegate_to: localhost
+#   connection: local
+#   changed_when: "'never' == 'changed'"
 
 
-# - name: Ansible host SSH Configuration
-#   ansible.builtin.include_tasks:
-#     file: ssh.yaml
-#   when: >
-#     not init | default(false)
-#       and
-#     ansible_connection == 'ssh'
-
-
-
-# - name: Hostname
-#   ansible.builtin.include_tasks:
-#     file: hostname.yaml
-#   when: >
-#     hostConfig.hosts_file is defined
-#       and
-#     ansible_host != 'localhost'
-#   tags:
-#     - always
+- name: Hostname
+  ansible.builtin.include_tasks:
+    file: debian/hostname.yaml
+  when: >
+    hostConfig.config.hostname | default(false) | bool
+      and
+    ansible_host != 'localhost'
 
 
 # - name: Hosts file
@@ -104,16 +90,12 @@
 #       hostConfig.hosts_file | default('') | length | int > 0
 #     )
 #       and
-#     ansible_os_family == 'Debian'
-#       and
 #     ansible_host != 'localhost'
-#   tags:
-#     - always
 
 
 - name: Network Configuration
   ansible.builtin.include_tasks:
-    file: network.yaml
+    file: debian/network.yaml
   when: >
     (
       hostConfig.network is defined
