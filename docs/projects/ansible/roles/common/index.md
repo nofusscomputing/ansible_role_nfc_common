@@ -9,7 +9,6 @@ about: https://gitlab.com/nofusscomputing/projects/ansible/roles/common
 This role is designed to be included in all playbooks as it offers features to dynamically setup the ansible environment.
 
 
-<div align="center">
 
 ## Role Details
 
@@ -21,7 +20,6 @@ This role is designed to be included in all playbooks as it offers features to d
 | Stats Available | _Not Yet_ | Available under yaml path `nfc_common`. |
 | Tags | _Nil_ | If you specify tags for running your playbooks, if this roll is included all tasks will still run as if tag `always` was specified. |
 
-</div>
 
 
 
