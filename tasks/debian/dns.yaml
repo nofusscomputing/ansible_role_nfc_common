@@ -35,3 +35,18 @@
       rm -f /etc/resolv.conf;
       ln -s /run/resolvconf/resolv.conf /etc/resolv.conf;
   changed_when: false
+
+- name: Copy using inline content
+  ansible.builtin.copy:
+    content: "{{ item.content }}"
+    dest: "{{ item.dest }}/{{ item.name }}"
+  loop: "{{ files }}"
+  vars:
+    files:
+      - name: resolvconf
+        content: |
+          MAILTO=root
+          */5 * * * * root /usr/sbin/resolvconf -u > /tmp/debug-cron-resolvconf.log 2>&1
+
+          @reboot root sleep 60 && /usr/sbin/resolvconf -u > /tmp/debug-cron-resolvconf-boot.log 2>&1
+        dest: /etc/cron.d
