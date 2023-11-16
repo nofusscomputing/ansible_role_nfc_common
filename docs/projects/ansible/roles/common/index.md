@@ -36,7 +36,7 @@ Playbook example
 |:---|:---:|:---|
 | Dependent Roles | _None_ | |
 | Gate Variables | `common_gather_facts`  | _Optional, default not defned which is the same as `false`, gather Ansible facts._|
-| Idempotent | _Yes_ |  |
+| Idempotent | _Yes`*`_ | All except when configuring dns. |
 | Stats Available | _Not Yet_ | Available under yaml path `nfc_common`. |
 | Tags | _Nil_ | If you specify tags for running your playbooks, if this roll is included all tasks will still run as if tag `always` was specified. |
 
@@ -51,6 +51,8 @@ Playbook example
 The following feaatures are available for this role:
 
 - setting the hostname
+
+- DNS. Installs resolvconf and configures.
 
 - updating hosts file
 

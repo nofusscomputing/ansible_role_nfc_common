@@ -27,6 +27,10 @@ hostConfig:
     hostname: true # Optional, boolean. Set the hostname to the inventory hostname. if this is a FQDN, only first octet is used
   name: laptop     # optional, bu default will use inventory hostname. 
   network:
+    dns:           # Optional, list. List of DNS servers to configure
+      - ip: '' # Mandatory, string. IP Address of DNS server to configure
+        search: # Optional, string. Space seperated string of dns domains to search
+        when: # Optional, boolean. use to define when to include this dns server.Jinja can be used. i.e. "{{ kubernetes_config is defined }}"
     
     interfaces: # used in init role
         # ethernet
@@ -52,6 +56,10 @@ hostConfig:
   aptPackages: # Optionlal
     - name: firmware-iwlwifi
       version: '' # Optional, string. if specified nust be the apt version and if  present will lock the package so it's not auto updated.
+      service:
+        name:
+        state: started
+        enabled: true
 
   aptRepositories:
     - name:           # Mandatory, string. friendly name for repository

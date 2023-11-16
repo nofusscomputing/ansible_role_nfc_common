@@ -5,10 +5,11 @@
     dest: /etc/network/interfaces
     owner: root
     mode: '700'
-  #notify: reboot_host
+  notify: reboot_host
   register: network_configure
   tags:
     - always
+
 
 - name: Trigger reboot if network config changed
   ansible.builtin.meta: flush_handlers

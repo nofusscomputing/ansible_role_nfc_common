@@ -108,6 +108,17 @@
     ansible_host != 'nww-nl.networkedweb.com'
 
 
+- name: DNS Resolving Setup/Configuration
+  ansible.builtin.include_tasks:
+    file: debian/dns.yaml
+  when: >
+    hostConfig.network.dns is defined
+      and
+    ansible_host != 'localhost'
+      and
+    ansible_host != 'nww-nl.networkedweb.com'
+
+
 #
 #  Playbook global variables
 #

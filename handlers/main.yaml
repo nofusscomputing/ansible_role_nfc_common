@@ -17,3 +17,13 @@
 - name: Rmmodipv6
   ansible.builtin.command: rmmod ipv6
   failed_when: false
+
+- name: Reload resolver config
+  ansible.builtin.shell:
+    cmd:
+      resolvconf --enable-updates;
+      resolvconf -u
+    executable: /bin/bash
+  changed_when: false
+  listen: reload_resolver
+  when: ansible_os_family == 'Debian'

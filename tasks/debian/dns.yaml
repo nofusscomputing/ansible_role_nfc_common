@@ -1,0 +1,37 @@
+---
+
+- name: Install DNS Resolver
+  ansible.builtin.include_tasks:
+    file: debian/apt_install.yaml
+    apply:
+      tags:
+        - always
+  loop: "{{ dns_resolver_app }}"
+  loop_control:
+    loop_var: apt_package
+  vars:
+    dns_resolver_app:
+      - name: resolvconf
+        service:
+          name: resolvconf
+          state: started
+          enabled: true
+
+
+- name: Create resolver configuration file
+  ansible.builtin.template:
+    src: resolv.conf.j2
+    dest: '/etc/resolvconf/resolv.conf.d/head'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  notify: reload_resolver
+  when: hostConfig.network.dns | default([]) | list | length > 0
+
+
+- name: Link Resolvd file
+  ansible.builtin.shell:
+    cmd: |
+      rm -f /etc/resolv.conf;
+      ln -s /run/resolvconf/resolv.conf /etc/resolv.conf;
+  changed_when: false
