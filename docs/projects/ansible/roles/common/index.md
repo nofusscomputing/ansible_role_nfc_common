@@ -1,4 +1,10 @@
-# common role
+---
+title: Common
+description: No Fuss Computings Ansible role nfc_common
+date: 2023-10-25
+template: project.html
+about: https://gitlab.com/nofusscomputing/projects/ansible/roles/common
+---
 
 This role is designed to be included in all playbooks as it offers features to dynamically setup the ansible environment.
 
@@ -21,6 +27,22 @@ Playbook example
 # Additional roles or playbook_include below this line
 ```
 
+
+<div align="center">
+
+## Role Details
+
+| Item| Value | Description |
+|:---|:---:|:---|
+| Dependent Roles | _None_ | |
+| Gate Variables | `common_gather_facts`  | _Optional, default not defned which is the same as `false`, gather Ansible facts._|
+| Idempotent | _Yes_ |  |
+| Stats Available | _Not Yet_ | Available under yaml path `nfc_common`. |
+| Tags | _Nil_ | If you specify tags for running your playbooks, if this roll is included all tasks will still run as if tag `always` was specified. |
+
+</div>
+
+
 !!! tip
     If the variable `common_gather_facts` is not set to `true`, by default facts will not be gathered.
 
@@ -28,36 +50,15 @@ Playbook example
 
 The following feaatures are available for this role:
 
-- SSH Key setup
 - setting the hostname
+
 - updating hosts file
+
 - setting up network interfaces with either static or dynamic settings
+
 - installing software via aptitude
+
 - setting common variables for use
-
-### SSH Key setup
-
-This role will setup the ssh connection to a host. This plugin will dynamically set `ansible_user` as `deploy` and use the ssh certificate for that user to connect to the host. if the host has never had the play run on it before, as long as the expectations are met; as per below. when running ansible from the cli specify in addition the following args `-kK --extra-vars "init=true"`. These arguments bring up the password dialog for the SSH connection and sudo and tell this role that it's an `init` connection, meaning first run.
-
-For SSH connection to a host to be configured the following is expected for this feature to work:
-
-- Clean host that has never had the play run on it
-
-  - OpenSSH Server is installed and password authentication is enabled (OpenSSH defaults to this)
-
-  - A user has been setup on the system with sudo access
-
-  - within the hosts var file the following variables have been set
-
-    - `ansible_host` set to the IP address (for static IP) or DNS name of the host
-
-    - `ansible_user` set to the user that has been configured on the host
-
-    - `ansible_connection` with a value of `ssh`
-
-- A host that has already had the play run on it at least once
-
-  - no further action required, just don't specify any SSH parameters during the play.
 
 
 ### APT
