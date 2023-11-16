@@ -9,7 +9,7 @@ include:
 variables:
   MY_PROJECT_ID: "52226103"
   GIT_SYNC_URL: "https://$GITHUB_USERNAME_ROBOT:$GITHUB_TOKEN_ROBOT@github.com/NoFussComputing/ansible_role_nfc_common.git"
-  PAGES_ENVIRONMENT_PATH: projects/ansible/roles/firewall/
+  PAGES_ENVIRONMENT_PATH: projects/ansible/roles/common/
 
 
 Ansible-roles.Submodule.Deploy:
