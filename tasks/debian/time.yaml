@@ -1,0 +1,65 @@
+---
+
+
+- name: Install required packages
+  ansible.builtin.include_tasks:
+    file: debian/apt_install.yaml
+    apply:
+      tags:
+        - always
+  loop: "{{ packages }}"
+  loop_control:
+    loop_var: apt_package
+  vars:
+    packages:
+      - name: systemd-timesyncd
+        service:
+          name: systemd-timesyncd
+          state: started
+          enabled: true
+
+
+- name: Create Config directory
+  ansible.builtin.file:
+    name: /etc/systemd/timesyncd.conf.d
+    state: directory
+
+
+- name: Fetch Current Timezone
+  ansible.builtin.shell:
+    cmd: |
+      timedatectl | grep -a 'Time zone' | awk '{print $3}'
+  changed_when: false
+  register: timezone_current
+
+
+- name: Set Timezone
+  ansible.builtin.command:
+    cmd: timedatectl set-timezone {{ hostConfig.config.timezone | default('UTC') }}
+  register: timezone_change
+  changed_when: (timezone_current.stdout | trim) != (hostConfig.config.timezone | default('UTC'))
+
+
+- name: Enable NTP Sync
+  ansible.builtin.command:
+    cmd: "timedatectl set-ntp true"
+  changed_when: false
+
+
+- name: Create NTP Servers config File
+  ansible.builtin.copy:
+    content: |
+      #
+      # TimeSyncD NTP Configuration
+      #
+      # Managed By ansible/role/nfc_common
+      #
+      # Dont edit this file directly as it will be overwritten. To add additional NTP servers
+      # edit the hostConfig config, adding to path hostConfig.config.ntp
+      #
+
+      [Time]
+      NTP={% for server in hostConfig.config.ntp -%}{{ server }} {% endfor +%}
+    dest: "/etc/systemd/timesyncd.conf.d/ntp_servers.conf"
+  notify: restart_timesyncd
+  when: hostConfig.config.ntp | default([]) | list | length > 0

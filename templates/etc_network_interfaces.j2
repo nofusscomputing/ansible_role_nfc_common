@@ -1,0 +1,25 @@
+#
+# Managed by: Ansible
+#
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+{% for networkDetails in hostConfig.network.interfaces %}
+allow-hotplug {{ networkDetails.name }}
+iface {{ networkDetails.name }} inet {{ networkDetails.type }}
+{% if networkDetails.address is defined %}      address {{ networkDetails.address }}
+{% endif %}
+{% if networkDetails.netmask is defined %}      netmask {{ networkDetails.netmask }}
+{% endif %}
+{% if networkDetails.gateway is defined %}      gateway {{ networkDetails.gateway }}
+{% endif %}
+{% if networkDetails.mac_address is defined %}      hwaddress ether {{ networkDetails.mac_address }}
+{% endif %}
+
+{% endfor %}

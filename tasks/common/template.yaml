@@ -1,0 +1,10 @@
+---
+
+- name: Expand and copy templates to host
+  ansible.builtin.template:
+    src: "{{ file_template.name }}"
+    dest: "{{ file_template.dest }}"
+    owner: "{{ file_template.owner | default(omit) }}"
+    mode: "{{ file_template.mode | default(omit) }}"
+  notify: "{{ file_template.notify | default(omit) }}"
+  diff: true

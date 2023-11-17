@@ -1,0 +1,41 @@
+---
+
+# ToDo: check if package not already installed
+
+- name: Install package
+  ansible.builtin.apt:
+    name: |-
+      {%- if apt_package.version is defined and apt_package.version | default('') != '' -%}
+        {{ apt_package.name }}={{ apt_package.version }}
+      {%- else -%}
+        {{ apt_package.name }}
+      {%- endif %}
+    state: "{{ apt_package.state | default('present') }}"
+    update_cache: true
+    install_recommends: "{{ apt_package.install_recommends | default(false) | bool }}"
+    allow_downgrade: true
+    autoremove: true
+
+
+# ToDo: check if the package is not already in use
+- name: Prevent auto-update of package
+  ansible.builtin.dpkg_selections:
+    name: "{{ apt_package.name }}"
+    selection: "{% if apt_package.version is defined %}hold{% else %}install{% endif %}"
+  when: >
+    apt_package.state | default('present') != 'absent'
+      and
+    apt_package.version is defined
+
+
+- name: Set service state for apps with configured service settings
+  ansible.builtin.service:
+    name: "{{ apt_package.service.name }}"
+    state: "{{ apt_package.service.state | default('started') }}"
+    enabled: "{{ apt_package.service.enabled | default(true) | bool }}"
+  when: apt_package.service is defined
+
+
+- name: Clear task variables
+  ansible.builtin.set_fact:
+    apt_package: null
