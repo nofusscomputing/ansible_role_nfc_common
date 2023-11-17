@@ -38,7 +38,6 @@
   loop: "{{ aptRepositories | default([]) | list }}"
   loop_control:
     loop_var: apt_repository
-  when: not initial_common_tasks | default(false) | bool
 
 
 - name: APT Installation
@@ -50,7 +49,6 @@
   loop: "{{ aptInstall | default([]) | list }}"
   loop_control:
     loop_var: apt_package
-  when: not initial_common_tasks | default(false) | bool
 
 
 - name: Template Filez
@@ -62,4 +60,3 @@
   loop: "{{ files.templates | default([]) | list }}"
   loop_control:
     loop_var: file_template
-  when: not initial_common_tasks | default(false) | bool
