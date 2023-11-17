@@ -27,3 +27,10 @@
   changed_when: false
   listen: reload_resolver
   when: ansible_os_family == 'Debian'
+
+
+- name: Restart time sync service
+  ansible.builtin.service:
+    name: systemd-timesyncd.service
+    state: restarted
+  listen: restart_timesyncd

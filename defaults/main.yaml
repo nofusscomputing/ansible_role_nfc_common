@@ -23,57 +23,65 @@ files:
 
 
 hostConfig:
+
   config:
-    hostname: true # Optional, boolean. Set the hostname to the inventory hostname. if this is a FQDN, only first octet is used
-  name: laptop     # optional, bu default will use inventory hostname. 
+    hostname: true                  # Optional, boolean. Set the hostname to the inventory hostname. if this is a FQDN, only first octet is used
+    timezone: UTC                   # Optional, string. A value as found from command `timedatectl list-timezones`
+    ntp:                            # Optional, list. list of NTP server to sync from.
+      - pool.ntp.org
+
+  name: laptop                      # optional, bu default will use inventory hostname. 
+
   network:
-    dns:           # Optional, list. List of DNS servers to configure
-      - ip: '' # Mandatory, string. IP Address of DNS server to configure
-        search: # Optional, string. Space seperated string of dns domains to search
-        when: # Optional, boolean. use to define when to include this dns server.Jinja can be used. i.e. "{{ kubernetes_config is defined }}"
-    
-    interfaces: # used in init role
-        # ethernet
-      - name: enp2s0             # mandatory to configure a specific interface
-        type: dhcp                # mandatory dhcp/static
+    dns:                            # Optional, list. List of DNS servers to configure
+
+      - ip: ''                      # Mandatory, string. IP Address of DNS server to configure
+        search:                     # Optional, string. Space seperated string of dns domains to search
+        when:                       # Optional, boolean. use to define when to include this dns server.
+                                    #         Jinja can be used. i.e. "{{ kubernetes_config is defined }}"
+
+    interfaces:                     # used in init role
+
+      - name: enp2s0                # mandatory to configure a specific interface
+        type: dhcp                  # mandatory dhcp/static
         # address: "192.168.1.30"   # optional
         # netmask: "255.255.255.0"  # optional
         # gateway: "192.168.1.1"    # optional
 
-        # wifi # leave setup to network manager
-      # - name: wlp3s0             # mandatory to configure a specific interface
-      #   type: dhcp                # mandatory dhcp/static
-        # address: "192.168.1.30"   # optional
-        # netmask: "255.255.255.0"  # optional
-        # gateway: "192.168.1.1"    # optional
 
-  hosts_file: # used by init role to build hosts file
+  hosts_file:                       # used by init role to build hosts file
+
     hosts: []
       # - hostname: bla
       #   address: ip
-    groups: [] # Optional, list. Ansible group name(s) for hosts that will be added to /etc/hosts
+    groups: []                      # Optional, list. Ansible group name(s) for hosts that will be added to /etc/hosts
 
   aptPackages: # Optionlal
+
     - name: firmware-iwlwifi
-      version: '' # Optional, string. if specified nust be the apt version and if  present will lock the package so it's not auto updated.
+      version: ''                   # Optional, string. if specified nust be the apt version and if present
+                                    # will lock the package so it's not auto updated.
       service:
         name:
         state: started
         enabled: true
 
   aptRepositories:
-    - name:           # Mandatory, string. friendly name for repository
-      repo:           # Mandatory, string. Apt repositry line. see apt.sources.list
-      save_directory: # Mandatory for signing key download, string. directory where to save signing key. filname will be name field.
-      file_extension: # Mandatory for signing key download, string. File extension for apt signing key. normally `asc`
-      url: # Mandatory for signing key download, string. url of the apt signing key.
 
-  files: # Optional, list.
-    # files:     # Optional, list. # Not yet supported
-    templates: # Optional, dict.
-      - name: # Mandatory, string. Source path for template
-        dest: # Mandatory, string. destination for template
-        owner: # Optional, string. name/uid for dest file owner
-        mode:  # Optional, string. mask for destination file
-        notify: # Optional, string. Name of notify to run on chage
+    - name:                         # Mandatory, string. friendly name for repository
+      repo:                         # Mandatory, string. Apt repositry line. see apt.sources.list
+      save_directory:               # Mandatory for signing key download, string. directory where to save signing key.
+                                    # filname will be name field.
+      file_extension:               # Mandatory for signing key download, string. File extension for apt signing key. normally `asc`
+      url:                          # Mandatory for signing key download, string. url of the apt signing key.
 
+  files:                            # Optional, list.
+
+    # files:                        # Optional, list. # Not yet supported
+
+    templates:                      # Optional, list of dict.
+      - name:                       # Mandatory, string. Source path for template
+        dest:                       # Mandatory, string. destination for template
+        owner:                      # Optional, string. name/uid for dest file owner
+        mode:                       # Optional, string. mask for destination file
+        notify:                     # Optional, string. Name of notify to run on change

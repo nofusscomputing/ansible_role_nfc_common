@@ -71,6 +71,12 @@
 #   changed_when: "'never' == 'changed'"
 
 
+- name: Time / Timezone / NTP
+  ansible.builtin.include_tasks:
+    file: debian/time.yaml
+  when: ansible_host != 'localhost'
+
+
 - name: Hostname
   ansible.builtin.include_tasks:
     file: debian/hostname.yaml
