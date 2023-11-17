@@ -25,6 +25,8 @@ nav:
 
         - projects/ansible/roles/common/index.md
 
+        - projects/ansible/roles/common/tasks.md
+
 
 - Operations: 
 
