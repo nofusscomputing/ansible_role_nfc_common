@@ -2,7 +2,7 @@
 
 - name: Create Apt proxy configuration file
   ansible.builtin.template:
-    src: 'debian/apt_proxy.conf'
+    src: 'apt_proxy.conf'
     dest: '/etc/apt/apt.conf.d/apt_proxy.conf'
     owner: 'root'
     group: 'root'
