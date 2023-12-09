@@ -19,6 +19,8 @@ This role is designed to be included in all playbooks as it offers features to d
 | Idempotent | _Yes`*`_ | All except when configuring dns. |
 | Stats Available | _Not Yet_ | Available under yaml path `nfc_common`. |
 | Tags | _Nil_ | If you specify tags for running your playbooks, if this roll is included all tasks will still run as if tag `always` was specified. |
+|  | _`stats_hosts`_ | used to collect hosts stats. _**Note:** To only collect the host(s) information you must also specify `--skip-tags always`as this role will run ALL tasks. This is by design._ |
+
 
 
 
@@ -45,6 +47,7 @@ Playbook example
 !!! tip
     If the variable `common_gather_facts` is not set to `true`, by default facts will not be gathered.
 
+
 ## Features
 
 The following feaatures are available for this role:
@@ -52,6 +55,8 @@ The following feaatures are available for this role:
 - setting the hostname
 
 - DNS. Installs resolvconf and configures.
+
+- [Host details collection for use with automations](#Stat%20Collection)
 
 - updating hosts file
 
@@ -88,6 +93,31 @@ aptSigningKeys:
 This role sets the following variables:
 
 - `host_vars[{hostname}].dynamic_processor_architecture` to the processor architecture, either `amd64`, `arm64` or `x86`.
+
+
+### Stat Collection
+
+As part of the initial run-once tasks the role collects the details of the host(s) within the inventory. The information gathered is intended to aid in automations with all host information available under the `hosts` object.
+
+stat output example
+
+``` json
+{
+  "hosts": {
+    "{inventory_hostname}": {
+      "manufacturer": "",
+      "model": "",
+      "serial_number": "",
+      "uuid": ""
+    },
+    "next_host": {} // etc
+  }
+}
+```
+
+!!! info "AWX / Ansible Automation Platform"
+    As this role is designed to work with AWX/Ansible Automation Platform the stats are not `per_host` as this is not supported in AWX.
+
 
 ## todo
 

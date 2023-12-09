@@ -1,0 +1,33 @@
+---
+# Note:
+#   This file must be included in every version of initial.yaml
+#   As it works on ALL OS types and is a default task for ALL.
+
+- name: Gather facts
+  ansible.builtin.gather_facts:
+  when: "'always' in ansible_skip_tags"
+
+- name: Collect Host information and build object
+  ansible.builtin.set_fact:
+    stats_data:
+      hosts: |
+        {
+          "{{ inventory_hostname }}": {
+            "manufacturer": "{{ ansible_system_vendor }}",
+            "model": "{{ ansible_product_name }}",
+            "serial_number": "{{ ansible_product_serial }}",
+            "uuid": "{{ ansible_product_uuid }}",
+          }
+        }
+
+
+- name: Collect Host information for ITSM automations
+  ansible.builtin.set_stats:
+    per_host: false
+    aggregate: true
+    data: "{{ stats_data | from_yaml }}"
+
+
+- name: Clear Stats Object
+  ansible.builtin.set_fact:
+    stats_data: null

@@ -1,5 +1,10 @@
 ---
 
+- name: Gather host details for ITSM
+  ansible.builtin.include_tasks:
+    file: stats_computer.yaml
+
+
 - name: Host Template Filez
   ansible.builtin.include_tasks:
     file: common/template.yaml

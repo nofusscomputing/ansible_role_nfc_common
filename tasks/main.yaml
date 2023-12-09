@@ -14,3 +14,13 @@
   when: ansible_os_family == 'Debian'
   tags:
     - always
+
+- name: Gather host details for ITSM
+  ansible.builtin.include_tasks:
+    file: stats_computer.yaml
+    apply:
+      tags:
+        stats_hosts
+  tags:
+    - never
+    - stats_hosts
