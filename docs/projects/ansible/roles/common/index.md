@@ -19,6 +19,10 @@ This role is designed to be included in all playbooks as it offers features to d
 | Idempotent | _Yes`*`_ | All except when configuring dns. |
 | Stats Available | _Not Yet_ | Available under yaml path `nfc_common`. |
 | Tags | _Nil_ | If you specify tags for running your playbooks, if this roll is included all tasks will still run as if tag `always` was specified. |
+|  | _`stats_hosts`_ | used to collect hosts stats. _**Note:** To only collect the host(s) information you must also specify `--skip-tags always`as this role will run ALL tasks. This is by design._ |
+
+
+
 
 
 when adding this role to a playbook, ensure that `gather_facts` is set to `no` for the play. this role gathers the facts for you. i.e.

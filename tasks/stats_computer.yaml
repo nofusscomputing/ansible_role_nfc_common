@@ -2,6 +2,11 @@
 # Note:
 #   This file must be included in every version of initial.yaml
 #   As it works on ALL OS types and is a default task for ALL.
+
+- name: Gather facts
+  ansible.builtin.gather_facts:
+  when: "'always' in ansible_skip_tags"
+
 - name: Collect Host information and build object
   ansible.builtin.set_fact:
     stats_data:
