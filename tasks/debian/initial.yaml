@@ -86,8 +86,6 @@
   ansible.builtin.include_tasks:
     file: debian/hostname.yaml
   when: >
-    hostConfig.config.hostname | default(false) | bool
-      and
     ansible_host != 'localhost'
 
 
