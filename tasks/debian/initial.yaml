@@ -111,7 +111,7 @@
     (
       hostConfig.network is defined
         and
-      hostConfig.network.interfaces | default('') | length > 0
+      hostConfig.network.interfaces | default([]) | length > 0
     )
       and
     ansible_host != 'localhost'

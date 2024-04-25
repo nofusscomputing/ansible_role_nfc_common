@@ -35,9 +35,9 @@
 
 - name: Set Timezone
   ansible.builtin.command:
-    cmd: timedatectl set-timezone {{ hostConfig.config.timezone | default('UTC') }}
+    cmd: timedatectl set-timezone {{ hostConfig.timezone | default('UTC') }}
   register: timezone_change
-  changed_when: (timezone_current.stdout | trim) != (hostConfig.config.timezone | default('UTC'))
+  changed_when: (timezone_current.stdout | trim) != (hostConfig.timezone | default('UTC'))
 
 
 - name: Enable NTP Sync
@@ -55,11 +55,11 @@
       # Managed By ansible/role/nfc_common
       #
       # Dont edit this file directly as it will be overwritten. To add additional NTP servers
-      # edit the hostConfig config, adding to path hostConfig.config.ntp
+      # edit the hostConfig config, adding to path hostConfig.ntp
       #
 
       [Time]
-      NTP={% for server in hostConfig.config.ntp -%}{{ server }} {% endfor +%}
+      NTP={% for server in hostConfig.ntp -%}{{ server }} {% endfor +%}
     dest: "/etc/systemd/timesyncd.conf.d/ntp_servers.conf"
   notify: restart_timesyncd
-  when: hostConfig.config.ntp | default([]) | list | length > 0
+  when: hostConfig.ntp | default([]) | list | length > 0
